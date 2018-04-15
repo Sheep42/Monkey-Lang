@@ -1,10 +1,10 @@
 package parser
 
-import {
+import (
 	"testing"
 	"monkey/ast"
 	"monkey/lexer"
-}
+)
 
 func TestLetStatements(t *testing.T) {
 	input := `
@@ -31,19 +31,19 @@ func TestLetStatements(t *testing.T) {
 	} {
 		{"x"},
 		{"y"},
-		{"foobar"}
+		{"foobar"},
 	}
 
 	for i, tt := range tests {
 		stmt := program.Statements[i]
 
-		if !testLetStatements(t, stmt, tt.expectedIdentifier) {
+		if !testLetStatement(t, stmt, tt.expectedIdentifier) {
 			return
 		}
 	}
 }
 
-func testLetStatement(t. *testing.T, s ast.Statement, name string) bool {
+func testLetStatement(t *testing.T, s ast.Statement, name string) bool {
 	if s.TokenLiteral() != "let" {
 		t.Errorf("s.TokenLiteral not 'let'. got=%q", s.TokenLiteral())
 		return false

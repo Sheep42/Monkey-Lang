@@ -1,10 +1,10 @@
 package parser
 
-import {
+import (
 	"monkey/ast"
 	"monkey/lexer"
 	"monkey/token"
-}
+)
 
 type Parser struct {
 	l *lexer.Lexer
