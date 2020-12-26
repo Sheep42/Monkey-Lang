@@ -10,9 +10,9 @@ import (
 type Parser struct {
 	l *lexer.Lexer
 
-	curToken token.Token
+	curToken  token.Token
 	peekToken token.Token
-	errors []string
+	errors    []string
 }
 
 func (p *Parser) nextToken() {
@@ -50,6 +50,7 @@ func (p *Parser) peekError(t token.TokenType) {
 }
 
 func (p *Parser) ParseProgram() *ast.Program {
+
 	program := &ast.Program{}
 	program.Statements = []ast.Statement{}
 
@@ -64,14 +65,17 @@ func (p *Parser) ParseProgram() *ast.Program {
 	}
 
 	return program
+
 }
 
 func (p *Parser) parseStatement() ast.Statement {
 	switch p.curToken.Type {
-		case token.LET:
-			return p.parseLetStatement()
-		default:
-			return nil
+	case token.LET:
+		return p.parseLetStatement()
+	case token.RETURN:
+		return p.parseReturnStatement()
+	default:
+		return nil
 	}
 }
 
@@ -95,9 +99,24 @@ func (p *Parser) parseLetStatement() *ast.LetStatement {
 	return stmt
 }
 
+func (p *Parser) parseReturnStatement() *ast.ReturnStatement {
+
+	stmt := &ast.ReturnStatement{Token: p.curToken}
+
+	p.nextToken()
+
+	// TODO: skipping expressions until they are implemented
+	if !p.curTokenIs(token.SEMI) {
+		p.nextToken()
+	}
+
+	return stmt
+
+}
+
 func New(l *lexer.Lexer) *Parser {
 	p := &Parser{
-		l: l,
+		l:      l,
 		errors: []string{},
 	}
 
