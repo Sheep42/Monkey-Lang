@@ -19,6 +19,18 @@ const (
 	CALL
 )
 
+// precedence table
+var precedences = map[token.TokenType]int{
+	token.EQ:       EQUALS,
+	token.NOT_EQ:   EQUALS,
+	token.LT:       LESSGREATER,
+	token.GT:       LESSGREATER,
+	token.PLUS:     SUM,
+	token.MINUS:    SUM,
+	token.ASTERISK: PRODUCT,
+	token.SLASH:    PRODUCT,
+}
+
 type (
 	prefixParseFn func() ast.Expression
 	infixParseFn  func(ast.Expression) ast.Expression
@@ -272,6 +284,22 @@ func (p *Parser) parseExpression(precedence int) ast.Expression {
 	}
 
 	leftExp := prefix()
+
+	for !p.peekTokenIs(token.SEMI) && precedence < p.peekPrecedence() {
+
+		infix := p.infixParseFns[p.peekToken.Type]
+
+		if infix == nil {
+
+			return leftExp
+
+		}
+
+		p.nextToken()
+
+		leftExp = infix(leftExp)
+
+	}
 
 	return leftExp
 
