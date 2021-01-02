@@ -63,6 +63,8 @@ func New(l *lexer.Lexer) *Parser {
 	p.registerPrefix(token.INT, p.parseIntegerLiteral)
 	p.registerPrefix(token.BANG, p.parsePrefixExpression)
 	p.registerPrefix(token.MINUS, p.parsePrefixExpression)
+	p.registerPrefix(token.TRUE, p.parseBoolean)
+	p.registerPrefix(token.FALSE, p.parseBoolean)
 
 	// Register infix parsing functions
 	p.infixParseFns = make(map[token.TokenType]infixParseFn)
@@ -117,6 +119,17 @@ func (p *Parser) parsePrefixExpression() ast.Expression {
 	expr.Right = p.parseExpression(PREFIX)
 
 	return expr
+
+}
+
+func (p *Parser) parseBoolean() ast.Expression {
+
+	exp := &ast.Boolean{
+		Token: p.curToken,
+		Value: p.curTokenIs(token.TRUE),
+	}
+
+	return exp
 
 }
 
