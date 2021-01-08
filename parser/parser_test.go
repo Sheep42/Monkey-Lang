@@ -503,6 +503,166 @@ func TestBooleanExpression(t *testing.T) {
 	}
 }
 
+func TestIfExpression(t *testing.T) {
+
+	input := "if( x < y ) { x }"
+
+	l := lexer.New(input)
+	p := New(l)
+	program := p.ParseProgram()
+
+	checkParserErrors(t, p)
+
+	if len(program.Statements) != 1 {
+
+		t.Fatalf("Program contains incorrect number of statements. Expected=%d. Got=%d", 1, len(program.Statements))
+
+	}
+
+	stmt, ok := program.Statements[0].(*ast.ExpressionStatement)
+
+	if !ok {
+
+		t.Fatalf("Statement is not an ast.ExpressionStatement. Got=%T", program.Statements[0])
+
+	}
+
+	exp, ok := stmt.Expression.(*ast.IfExpression)
+
+	if !ok {
+
+		t.Fatalf("Expression is not an ast.IfExpression. Got=%T", stmt.Expression)
+
+	}
+
+	if !testInfixExpression(t, exp.Condition, "x", "<", "y") {
+		return
+	}
+
+	if len(exp.Consequence.Statements) != 1 {
+
+		t.Errorf(
+			"Consequence contains incorrect number of statements. Expected=%d. Got=%d",
+			1,
+			len(exp.Consequence.Statements),
+		)
+
+	}
+
+	consequence, ok := exp.Consequence.Statements[0].(*ast.ExpressionStatement)
+
+	if !ok {
+
+		t.Fatalf(
+			"Consequence.Statements[0] is not correct type. Expected=%s. Got=%T",
+			"*ast.ExpressionStatement",
+			exp.Consequence.Statements[0],
+		)
+
+	}
+
+	if !testIdentifier(t, consequence.Expression, "x") {
+		return
+	}
+
+	if exp.Alternative != nil {
+
+		t.Errorf("exp.Alternative was not nil. Got=%+v", exp.Alternative)
+
+	}
+
+}
+
+func TestIfElseExpression(t *testing.T) {
+
+	input := "if( x < y ) { x } else { y }"
+
+	l := lexer.New(input)
+	p := New(l)
+	program := p.ParseProgram()
+
+	checkParserErrors(t, p)
+
+	if len(program.Statements) != 1 {
+
+		t.Fatalf("Program contains incorrect number of statements. Expected=%d. Got=%d", 1, len(program.Statements))
+
+	}
+
+	stmt, ok := program.Statements[0].(*ast.ExpressionStatement)
+
+	if !ok {
+
+		t.Fatalf("Statement is not an ast.ExpressionStatement. Got=%T", program.Statements[0])
+
+	}
+
+	exp, ok := stmt.Expression.(*ast.IfExpression)
+
+	if !ok {
+
+		t.Fatalf("Expression is not an ast.IfExpression. Got=%T", stmt.Expression)
+
+	}
+
+	if !testInfixExpression(t, exp.Condition, "x", "<", "y") {
+		return
+	}
+
+	if len(exp.Consequence.Statements) != 1 {
+
+		t.Errorf(
+			"Consequence contains incorrect number of statements. Expected=%d. Got=%d",
+			1,
+			len(exp.Consequence.Statements),
+		)
+
+	}
+
+	consequence, ok := exp.Consequence.Statements[0].(*ast.ExpressionStatement)
+
+	if !ok {
+
+		t.Fatalf(
+			"Consequence.Statements[0] is not correct type. Expected=%s. Got=%T",
+			"*ast.ExpressionStatement",
+			exp.Consequence.Statements[0],
+		)
+
+	}
+
+	if !testIdentifier(t, consequence.Expression, "x") {
+		return
+	}
+
+	if len(exp.Consequence.Statements) != 1 {
+
+		t.Errorf(
+			"Consequence contains incorrect number of statements. Expected=%d. Got=%d",
+			1,
+			len(exp.Consequence.Statements),
+		)
+
+	}
+
+	alt, ok := exp.Alternative.Statements[0].(*ast.ExpressionStatement)
+
+	if !ok {
+
+		t.Fatalf(
+			"Alternative.Statements[0] is not correct type. Expected=%s. Got=%T",
+			"*ast.ExpressionStatement",
+			exp.Alternative.Statements[0],
+		)
+
+	}
+
+	if !testIdentifier(t, alt.Expression, "y") {
+		return
+	}
+
+}
+
 func checkParserErrors(t *testing.T, p *Parser) {
 	errors := p.Errors()
 
