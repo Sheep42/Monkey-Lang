@@ -663,6 +663,101 @@ func TestIfElseExpression(t *testing.T) {
 
 }
 
+func TestFunctionLiteralParsing(t *testing.T) {
+
+	input := `fn(x, y) { x + y; }`
+
+	l := lexer.New(input)
+	p := New(l)
+	program := p.ParseProgram()
+
+	checkParserErrors(t, p)
+
+	if len(program.Statements) != 1 {
+
+		t.Fatalf("Program has incorrect number of statements. Expected=%d. Got=%d", 1, len(program.Statements))
+
+	}
+
+	stmt, ok := program.Statements[0].(*ast.ExpressionStatement)
+
+	if !ok {
+
+		t.Fatalf("Statement is of incorrect type. Expected=%s. Got=%T", "*ast.ExpressionStatement", program.Statements[0])
+
+	}
+
+	fn, ok := stmt.Expression.(*ast.FunctionLiteral)
+
+	if !ok {
+
+		t.Fatalf("Expression is of incorrect type. Expected=%s. Got=%T", "*ast.FunctionLiteral", stmt.Expression)
+
+	}
+
+	if len(fn.Parameters) != 2 {
+
+		t.Fatalf("Function has incorrect number of params. Expected=%d. Got=%d", 2, len(fn.Parameters))
+
+	}
+
+	testLiteralExpression(t, fn.Parameters[0], "x")
+	testLiteralExpression(t, fn.Parameters[1], "y")
+
+	if len(fn.Body.Statements) != 1 {
+
+		t.Fatalf("Function body has incorrect number of statements. Expected=%d. Got=%d", 1, len(fn.Body.Statements))
+
+	}
+
+	body, ok := fn.Body.Statements[0].(*ast.ExpressionStatement)
+
+	if !ok {
+
+		t.Fatalf("Body statement is of incorrect type. Expected=%s. Got=%T", "*ast.ExpressionStatement", fn.Body.Statements[0])
+
+	}
+
+	testInfixExpression(t, body.Expression, "x", "+", "y")
+
+}
+
+func TestFunctionParamParsing(t *testing.T) {
+
+	tests := []struct {
+		input          string
+		expectedParams []string
+	}{
+		{input: "fn(){}", expectedParams: []string{}},
+		{input: "fn(x){}", expectedParams: []string{"x"}},
+		{input: "fn(x, y) {}", expectedParams: []string{"x", "y"}},
+		{input: "fn(x, y, z) {}", expectedParams: []string{"x", "y", "z"}},
+	}
+
+	for _, tt := range tests {
+
+		l := lexer.New(tt.input)
+		p := New(l)
+		program := p.ParseProgram()
+		checkParserErrors(t, p)
+
+		stmt := program.Statements[0].(*ast.ExpressionStatement)
+		fn := stmt.Expression.(*ast.FunctionLiteral)
+
+		if len(fn.Parameters) != len(tt.expectedParams) {
+
+			t.Errorf("length of params is incorrect. Expected=%d. Got=%d", len(tt.expectedParams), len(fn.Parameters))
+
+		}
+
+		for i, ident := range tt.expectedParams {
+
+			testLiteralExpression(t, fn.Parameters[i], ident)
+
+		}
+	}
+}
+
 func checkParserErrors(t *testing.T, p *Parser) {
 	errors := p.Errors()
 
