@@ -273,6 +273,12 @@ func (p *Parser) parseBlockStatement() *ast.BlockStatement {
 
 		p.nextToken()
 
+		if p.curTokenIs(token.SEMI) {
+
+			p.nextToken()
+
+		}
+
 	}
 
 	return block
