@@ -422,6 +422,7 @@ func (p *Parser) parseStatement() ast.Statement {
 }
 
 func (p *Parser) parseLetStatement() *ast.LetStatement {
+
 	stmt := &ast.LetStatement{Token: p.curToken}
 
 	if !p.expectPeek(token.IDENT) {
@@ -442,6 +443,7 @@ func (p *Parser) parseLetStatement() *ast.LetStatement {
 	}
 
 	return stmt
+
 }
 
 func (p *Parser) parseReturnStatement() *ast.ReturnStatement {
@@ -450,7 +452,8 @@ func (p *Parser) parseReturnStatement() *ast.ReturnStatement {
 
 	p.nextToken()
 
-	// TODO: skipping expressions until they are implemented
+	stmt.ReturnValue = p.parseExpression(LOWEST)
+
 	if !p.curTokenIs(token.SEMI) {
 		p.nextToken()
 	}

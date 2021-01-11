@@ -16,7 +16,7 @@ func TestLetStatements(t *testing.T) {
 	}{
 		{"let x = 5;", "x", 5},
 		{"let y = true;", "y", true},
-		// {"let foobar = y;", "foobar", "y"},
+		{"let foobar = y;", "foobar", "y"},
 	}
 
 	for _, tt := range tests {
@@ -47,8 +47,6 @@ func TestLetStatements(t *testing.T) {
 	}
 
 }
-
-/*
 
 func TestReturnStatements(t *testing.T) {
 
@@ -96,8 +94,6 @@ func TestReturnStatements(t *testing.T) {
 	}
 
 }
-
-*/
 
 func TestIdentifierExpression(t *testing.T) {
 
