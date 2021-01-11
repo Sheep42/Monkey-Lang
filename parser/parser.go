@@ -438,7 +438,7 @@ func (p *Parser) parseLetStatement() *ast.LetStatement {
 	p.nextToken()
 	stmt.Value = p.parseExpression(LOWEST)
 
-	for !p.curTokenIs(token.SEMI) {
+	if !p.curTokenIs(token.SEMI) {
 		p.nextToken()
 	}
 
