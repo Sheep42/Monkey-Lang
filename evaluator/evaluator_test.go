@@ -70,6 +70,35 @@ func TestEvalStringLiteral(t *testing.T) {
 
 }
 
+func TestStringConcatenation(t *testing.T) {
+
+	tests := []struct {
+		input    string
+		expected string
+	}{
+		{`"Hello" + " " + "World"`, "Hello World"},
+		{`'Hello' + ' ' + 'World'`, "Hello World"},
+		{`"Hello" + ' ' + 'World'`, "Hello World"},
+	}
+
+	for _, tt := range tests {
+
+		eval := testEval(tt.input)
+
+		str, ok := eval.(*object.String)
+
+		if !ok {
+			t.Fatalf("Object is incorrect type. Expected=\"String\". Got=\"%T\"", eval)
+		}
+
+		if str.Value != tt.expected {
+			t.Errorf("String has incorrect value. Expected=%q. Got=%q", tt.expected, str.Value)
+		}
+
+	}
+
+}
+
 func TestEvalBooleanExpression(t *testing.T) {
 
 	tests := []struct {
@@ -217,6 +246,10 @@ func TestErrorHandling(t *testing.T) {
 		{
 			"if(10 > 1) { true + false; }",
 			"unknown operator: BOOLEAN + BOOLEAN",
+		},
+		{
+			`"Hello" - "World"`,
+			"unknown operator: STRING - STRING",
 		},
 		{
 			`

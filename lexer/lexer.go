@@ -97,7 +97,7 @@ func (l *Lexer) NextToken() token.Token {
 		fallthrough
 	case '"':
 		tok.Type = token.STRING
-		tok.Literal = l.readString()
+		tok.Literal = l.readString(l.ch)
 	case 0:
 		tok.Literal = ""
 		tok.Type = token.EOF
@@ -146,7 +146,7 @@ func (l *Lexer) readNumber() string {
 	return l.input[position:l.position]
 }
 
-func (l *Lexer) readString() string {
+func (l *Lexer) readString(quoteCh byte) string {
 
 	pos := l.position + 1
 
@@ -154,7 +154,7 @@ func (l *Lexer) readString() string {
 
 		l.readChar()
 
-		if l.ch == '"' || l.ch == '\'' || l.ch == 0 {
+		if l.ch == quoteCh || l.ch == 0 {
 			break
 		}
 

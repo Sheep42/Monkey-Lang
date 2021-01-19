@@ -32,6 +32,8 @@ func TestNextToken(t *testing.T) {
 		"foo bar"
 		'foobar'
 		'foo bar'
+		"I'm"
+		'"Hi"'
 	`
 
 	tests := []struct {
@@ -115,6 +117,8 @@ func TestNextToken(t *testing.T) {
 		{token.STRING, "foo bar"},
 		{token.STRING, "foobar"},
 		{token.STRING, "foo bar"},
+		{token.STRING, "I'm"},
+		{token.STRING, `"Hi"`},
 		{token.EOF, ""},
 	}
 
