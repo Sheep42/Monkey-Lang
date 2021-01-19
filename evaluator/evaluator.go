@@ -18,7 +18,7 @@ func Eval(node ast.Node, env *object.Environment) object.Object {
 
 	// Statements
 	case *ast.Program:
-		return evalProgram(node.Statements, env)
+		return evalProgram(node, env)
 
 	case *ast.ExpressionStatement:
 		return Eval(node.Expression, env)
@@ -123,11 +123,11 @@ func isError(obj object.Object) bool {
 
 }
 
-func evalProgram(stmts []ast.Statement, env *object.Environment) object.Object {
+func evalProgram(program *ast.Program, env *object.Environment) object.Object {
 
 	var res object.Object
 
-	for _, stmt := range stmts {
+	for _, stmt := range program.Statements {
 
 		res = Eval(stmt, env)
 
@@ -152,11 +152,16 @@ func evalBlockStatement(block *ast.BlockStatement, env *object.Environment) obje
 	for _, stmt := range block.Statements {
 
 		res = Eval(stmt, env)
-		t := res.Type()
 
-		// bail out early if we hit a return or error
-		if res != nil && t == object.ReturnValueObj || t == object.ErrorObj {
-			return res
+		if res != nil {
+
+			t := res.Type()
+
+			// bail out early if we hit a return or error
+			if t == object.ReturnValueObj || t == object.ErrorObj {
+				return res
+			}
+
 		}
 
 	}
