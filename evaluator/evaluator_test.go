@@ -43,6 +43,33 @@ func TestEvalIntegerExpression(t *testing.T) {
 
 }
 
+func TestEvalStringLiteral(t *testing.T) {
+
+	tests := []struct {
+		input    string
+		expected string
+	}{
+		{`"Hello World"`, "Hello World"},
+		{`'Hello World'`, "Hello World"},
+	}
+
+	for _, tt := range tests {
+
+		eval := testEval(tt.input)
+		str, ok := eval.(*object.String)
+
+		if !ok {
+			t.Fatalf("Evaluated obj was incorrect type. Expected=\"*object.String\". Got=\"%T\"", eval)
+		}
+
+		if str.Value != tt.expected {
+			t.Errorf("String has incorrect value. Expected=%q. Got=%q", tt.expected, str.Value)
+		}
+
+	}
+
+}
+
 func TestEvalBooleanExpression(t *testing.T) {
 
 	tests := []struct {

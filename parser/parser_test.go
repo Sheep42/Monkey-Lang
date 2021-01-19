@@ -185,6 +185,36 @@ func TestIntegerLiteralExpression(t *testing.T) {
 	}
 }
 
+func TestStringLiteralExpression(t *testing.T) {
+
+	tests := []struct {
+		input    string
+		expected string
+	}{
+		{`"hello, world"`, "hello, world"},
+		{`'hello, world'`, "hello, world"},
+	}
+	for _, tt := range tests {
+
+		l := lexer.New(tt.input)
+		p := New(l)
+		program := p.ParseProgram()
+		checkParserErrors(t, p)
+
+		stmt := program.Statements[0].(*ast.ExpressionStatement)
+		literal, ok := stmt.Expression.(*ast.StringLiteral)
+
+		if !ok {
+			t.Fatalf("Statement was incorrect type. Expected=\"*ast.StringLiteral\". Got=\"%T\"", stmt)
+		}
+
+		if literal.Value != tt.expected {
+			t.Errorf("Literal value was incorrect. Expected=%q. Got=%q", tt.expected, literal.Value)
+		}
+
+	}
+}
+
 func TestParsingPrefixExpressions(t *testing.T) {
 
 	prefixTests := []struct {

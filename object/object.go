@@ -8,6 +8,7 @@ import (
 )
 
 const (
+	StringObj      = "STRING"
 	IntegerObj     = "INTEGER"
 	NullObj        = "NULL"
 	BooleanObj     = "BOOLEAN"
@@ -75,6 +76,13 @@ type Integer struct {
 
 func (i *Integer) Type() ObjectType { return IntegerObj }
 func (i *Integer) Inspect() string  { return fmt.Sprintf("%d", i.Value) }
+
+type String struct {
+	Value string
+}
+
+func (s *String) Type() ObjectType { return StringObj }
+func (s *String) Inspect() string  { return s.Value }
 
 type Boolean struct {
 	Value bool
