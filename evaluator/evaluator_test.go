@@ -381,6 +381,47 @@ func TestClosures(t *testing.T) {
 
 }
 
+func TestBuiltinFns(t *testing.T) {
+
+	tests := []struct {
+		input    string
+		expected interface{}
+	}{
+
+		{`len("")`, 0},
+		{`len("four")`, 4},
+		{`len('four')`, 4},
+		{`len("hello world")`, 11},
+		{`len(1)`, "len: Unsupported argument. expected=STRING. got=INTEGER"},
+		{`len("one", "two")`, "len: wrong number of args. expected=1. got=2"},
+	}
+
+	for _, tt := range tests {
+
+		eval := testEval(tt.input)
+
+		switch expected := tt.expected.(type) {
+
+		case int:
+			testIntegerObject(t, eval, int64(expected))
+		case string:
+			errObj, ok := eval.(*object.Error)
+
+			if !ok {
+				t.Errorf("object is not Error. got=%T", eval)
+				continue
+			}
+
+			if errObj.Message != expected {
+				t.Errorf("wrong error message. expected=%q. got=%q", expected, errObj.Message)
+			}
+
+		}
+
+	}
+
+}
+
 func testNullObj(t *testing.T, obj object.Object) bool {
 
 	if obj != Null {

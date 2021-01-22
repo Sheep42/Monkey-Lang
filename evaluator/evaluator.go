@@ -6,12 +6,14 @@ import (
 	"monkey/object"
 )
 
+// Literal Null / True / False
 var (
 	Null  = &object.Null{}
 	True  = &object.Boolean{Value: true}
 	False = &object.Boolean{Value: false}
 )
 
+// Eval evaluates the AST
 func Eval(node ast.Node, env *object.Environment) object.Object {
 
 	switch node := node.(type) {
@@ -321,13 +323,15 @@ func evalIfElseExpression(ie *ast.IfExpression, env *object.Environment) object.
 
 func evalIdentifier(node *ast.Identifier, env *object.Environment) object.Object {
 
-	val, ok := env.Get(node.Value)
-
-	if !ok {
-		return newError("identifier not found: %s", node.Value)
+	if val, ok := env.Get(node.Value); ok {
+		return val
 	}
 
-	return val
+	if builtin, ok := builtins[node.Value]; ok {
+		return builtin
+	}
+
+	return newError("identifier not found: %s", node.Value)
 
 }
 
@@ -353,16 +357,21 @@ func evalExpressions(exps []ast.Expression, env *object.Environment) []object.Ob
 
 func applyFn(fn object.Object, args []object.Object) object.Object {
 
-	function, ok := fn.(*object.Function)
+	switch fn := fn.(type) {
 
-	if !ok {
+	case *object.Function:
+
+		extendedEnv := extendFnEnv(fn, args)
+		evaluated := Eval(fn.Body, extendedEnv)
+		return unwrapReturnVal(evaluated)
+
+	case *object.Builtin:
+		return fn.Fn(args...)
+
+	default:
 		return newError("not a function: %s", fn.Type())
+
 	}
-
-	extendedEnv := extendFnEnv(function, args)
-	evaluated := Eval(function.Body, extendedEnv)
-
-	return unwrapReturnVal(evaluated)
 
 }
 

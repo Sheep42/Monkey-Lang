@@ -15,7 +15,10 @@ const (
 	ReturnValueObj = "RETURN_VALUE"
 	ErrorObj       = "ERROR"
 	FunctionObj    = "FUNCTION"
+	BuiltinObj     = "BUILTIN"
 )
+
+type BuiltinFn func(args ...Object) Object
 
 type Environment struct {
 	store map[string]Object
@@ -132,3 +135,10 @@ func (f *Function) Inspect() string {
 	return out.String()
 
 }
+
+type Builtin struct {
+	Fn BuiltinFn
+}
+
+func (b *Builtin) Type() ObjectType { return BuiltinObj }
+func (b *Builtin) Inspect() string  { return "builtin function" }
