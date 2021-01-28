@@ -138,10 +138,13 @@ func evalProgram(program *ast.Program, env *object.Environment) object.Object {
 
 		// bail out early if we hit a return or error
 		switch res := res.(type) {
+
 		case *object.ReturnValue:
 			return res.Value
+
 		case *object.Error:
 			return res
+
 		}
 
 	}
