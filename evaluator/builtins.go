@@ -28,4 +28,46 @@ var builtins = map[string]*object.Builtin{
 			}
 		},
 	},
+	"first": {
+		Fn: func(args ...object.Object) object.Object {
+
+			if len(args) != 1 {
+				return newError("first: Got wrong number of args. Expected=%d. Got=%d", 1, len(args))
+			}
+
+			if args[0].Type() != object.ArrayObj {
+				return newError("first: No implementation for argument type %T. Expected=%s", args[0], object.ArrayObj)
+			}
+
+			arr := args[0].(*object.Array)
+
+			if len(arr.Elements) > 0 {
+				return arr.Elements[0]
+			}
+
+			return Null
+
+		},
+	},
+	"last": {
+		Fn: func(args ...object.Object) object.Object {
+
+			if len(args) != 1 {
+				return newError("last: Got wrong number of args. Expected=%d. Got=%d", 1, len(args))
+			}
+
+			if args[0].Type() != object.ArrayObj {
+				return newError("last: No implementation for argument type %T. Expected=%s", args[0], object.ArrayObj)
+			}
+
+			arr := args[0].(*object.Array)
+
+			if len(arr.Elements) > 0 {
+				return arr.Elements[len(arr.Elements)-1]
+			}
+
+			return Null
+
+		},
+	},
 }
