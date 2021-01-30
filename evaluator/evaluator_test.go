@@ -422,6 +422,27 @@ func TestBuiltinFns(t *testing.T) {
 
 }
 
+func TestArrayLiterals(t *testing.T) {
+
+	input := "[1, 2 * 2, 3 + 4]"
+
+	evaluated := testEval(input)
+	result, ok := evaluated.(*object.Array)
+
+	if !ok {
+		t.Fatalf("Object was incorrect type. Expected=%s. Got=%T", "ast.Array", evaluated)
+	}
+
+	if len(result.Elements) != 3 {
+		t.Fatalf("Array has incorrect number of elements. Expected=%d. Got=%d", 3, len(result.Elements))
+	}
+
+	testIntegerObject(t, result.Elements[0], 1)
+	testIntegerObject(t, result.Elements[1], 4)
+	testIntegerObject(t, result.Elements[2], 7)
+
+}
+
 func testNullObj(t *testing.T, obj object.Object) bool {
 
 	if obj != Null {
