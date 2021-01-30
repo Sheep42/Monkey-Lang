@@ -392,6 +392,7 @@ func TestBuiltinFns(t *testing.T) {
 		{`len("four")`, 4},
 		{`len('four')`, 4},
 		{`len("hello world")`, 11},
+		{`len([1, 2])`, 2},
 		{`len(1)`, "len: Unsupported argument. expected=STRING. got=INTEGER"},
 		{`len("one", "two")`, "len: wrong number of args. expected=1. got=2"},
 	}
