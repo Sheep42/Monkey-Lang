@@ -70,4 +70,51 @@ var builtins = map[string]*object.Builtin{
 
 		},
 	},
+	"rest": {
+		Fn: func(args ...object.Object) object.Object {
+
+			if len(args) != 1 {
+				return newError("rest: Got wrong number of args. Expected=%d. Got=%d", 1, len(args))
+			}
+
+			if args[0].Type() != object.ArrayObj {
+				return newError("rest: No implementation for argument type %T. Expected=%s", args[0], object.ArrayObj)
+			}
+
+			arr := args[0].(*object.Array)
+
+			if length := len(arr.Elements); length > 0 {
+
+				newElements := make([]object.Object, length-1, length-1)
+				copy(newElements, arr.Elements[1:length])
+				return &object.Array{Elements: newElements}
+
+			}
+
+			return Null
+
+		},
+	},
+	"push": {
+		Fn: func(args ...object.Object) object.Object {
+
+			if len(args) != 2 {
+				return newError("push: Got wrong number of args. Expected=%d. Got=%d", 2, len(args))
+			}
+
+			if args[0].Type() != object.ArrayObj {
+				return newError("push: No implementation for argument type %T. Expected=%s", args[0], object.ArrayObj)
+			}
+
+			arr := args[0].(*object.Array)
+			length := len(arr.Elements)
+
+			newElements := make([]object.Object, length+1, length+1)
+			copy(newElements, arr.Elements)
+			newElements[length] = args[1]
+
+			return &object.Array{Elements: newElements}
+
+		},
+	},
 }
