@@ -372,6 +372,9 @@ func evalIndexExpression(left, index object.Object) object.Object {
 	case left.Type() == object.ArrayObj && index.Type() == object.IntegerObj:
 		return evalArrayIndexExpression(left, index)
 
+	case left.Type() == object.HashObj:
+		return evalHashIndexExpression(left, index)
+
 	default:
 		return newError("Index operator not supported: %s[%s]", left.Type(), index.Type())
 
@@ -390,6 +393,25 @@ func evalArrayIndexExpression(array, index object.Object) object.Object {
 	}
 
 	return arr.Elements[idx]
+
+}
+
+func evalHashIndexExpression(hash, index object.Object) object.Object {
+
+	hashObject := hash.(*object.Hash)
+	key, ok := index.(object.Hashable)
+
+	if !ok {
+		return newError("Invalid HashKey: %q. Type %q is unsupported.", index.Inspect(), index.Type())
+	}
+
+	pair, ok := hashObject.Pairs[key.HashKey()]
+
+	if !ok {
+		return Null
+	}
+
+	return pair.Value
 
 }
 
