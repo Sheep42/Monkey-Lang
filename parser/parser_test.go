@@ -2,9 +2,10 @@ package parser
 
 import (
 	"fmt"
-	"monkey/ast"
-	"monkey/lexer"
 	"testing"
+
+	"github.com/Sheep42/Monkey-Lang/ast"
+	"github.com/Sheep42/Monkey-Lang/lexer"
 )
 
 func TestLetStatements(t *testing.T) {

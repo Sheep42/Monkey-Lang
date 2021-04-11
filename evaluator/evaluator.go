@@ -2,8 +2,9 @@ package evaluator
 
 import (
 	"fmt"
-	"monkey/ast"
-	"monkey/object"
+
+	"github.com/Sheep42/Monkey-Lang/ast"
+	"github.com/Sheep42/Monkey-Lang/object"
 )
 
 // Literal Null / True / False

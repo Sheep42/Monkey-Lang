@@ -4,7 +4,8 @@ import (
 	"fmt"
 	"os"
 	"os/user"
-	"monkey/repl"
+
+	"github.com/Sheep42/Monkey-Lang/repl"
 )
 
 func main() {

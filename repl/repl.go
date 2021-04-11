@@ -4,10 +4,11 @@ import (
 	"bufio"
 	"fmt"
 	"io"
-	"monkey/evaluator"
-	"monkey/lexer"
-	"monkey/object"
-	"monkey/parser"
+
+	"github.com/Sheep42/Monkey-Lang/evaluator"
+	"github.com/Sheep42/Monkey-Lang/lexer"
+	"github.com/Sheep42/Monkey-Lang/object"
+	"github.com/Sheep42/Monkey-Lang/parser"
 )
 
 const PROMPT = `--> `

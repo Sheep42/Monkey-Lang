@@ -1,7 +1,7 @@
 //lexer/lexer.go
 package lexer
 
-import "monkey/token"
+import "github.com/Sheep42/Monkey-Lang/token"
 
 type Lexer struct {
 	input        string //The input

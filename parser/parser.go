@@ -2,10 +2,11 @@ package parser
 
 import (
 	"fmt"
-	"monkey/ast"
-	"monkey/lexer"
-	"monkey/token"
 	"strconv"
+
+	"github.com/Sheep42/Monkey-Lang/ast"
+	"github.com/Sheep42/Monkey-Lang/lexer"
+	"github.com/Sheep42/Monkey-Lang/token"
 )
 
 const (
